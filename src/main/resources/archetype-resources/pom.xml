@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<version>${version}</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<version.wildfly.swarm>2017.6.0</version.wildfly.swarm>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+	</properties>
+
+	<!-- The DependencyManagement dependencies automatically set compatible versions on all of the dependencies below which don't have a version listed (important to ensure compatibility across Swarm components) -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>bom</artifactId>
+				<version>${version.wildfly.swarm}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<!-- Tells your IDE and the compiler that this is a Java EE project and not to worry if some of the classes aren't bundled inside your source code -->
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<!-- This is what provides authentication and authorization for your application -->
+			<groupId>enterprises.mccollum.wmapp</groupId>
+			<artifactId>ssauthclient</artifactId>
+			<version>1.0.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<!-- PrimeFaces provides extra Web UI goodies, delete if you're not adding a Web UI to your project -->
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>6.1</version>
+		</dependency>
+		<dependency>
+			<!-- The PrettyFaces library, provides the ability to make query parameters into parts of the URL path in a Web UI (not applicable for a Web UI; google 'JSF PrettyFaces') -->
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-servlet</artifactId>
+			<version>3.4.1.Final</version>
+		</dependency>
+		<dependency>
+			<!-- Part of PrettyFaces, don't delete -->
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-config-prettyfaces</artifactId>
+			<version>3.4.1.Final</version>
+		</dependency>
+		<dependency>
+			<!-- Twitter Bootstrap theme for the web UI -->
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<!-- OmniFaces library adds some extra tags to our XHTML (web UI thing) -->
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<!-- WildFly Swarm Fractions (the thing that lets us run this in a single jar) -->
+		<dependency>
+			<!-- Allows use of @Inject (google Java CDI) -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>cdi</artifactId>
+		</dependency>
+		<dependency>
+			<!-- ?, something to make CDI work, could be automatic classpath scanning -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>cdi-config</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Allows use of EJBs -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>ejb</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Provides the Wildfly management interface, optional -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>management</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Provides the Web UI component of the optional Wildfly management interface -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>management-console</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Allows the use of JPA (database access; google JPA) -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>jpa</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Adds 'default datasource' which is needed for booting an app server -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>datasources</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Adds a simple embedded database right into the application -->
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<!-- <version>1.4.195</version> -->
+		</dependency>
+		<dependency>
+			<!-- Provides the ability to host a Web UI -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>jsf</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Provides the ability to expose a ReST API (Jax-RS is the way to build ReST APIs in Java EE) -->
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>jaxrs</artifactId>
+			<!-- <version>${version.wildfly.swarm}</version> -->
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>META-INF/persistence.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<!-- Let Wildfly Swarm do it's magic when we package our jar -->
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>wildfly-swarm-plugin</artifactId>
+				<version>${version.wildfly.swarm}</version>
+				
+				<executions>
+					<execution>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>internal</id>
+			<url>http://archiva.mccollum.enterprises/repository/internal/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://archiva.mccollum.enterprises/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>internal</id>
+			<name>Archiva Managed Internal Repository</name>
+			<url>http://archiva.mccollum.enterprises/repository/internal/</url>
+			<releases>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<name>Archiva Managed Snapshot Repository</name>
+			<url>http://archiva.mccollum.enterprises/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>internal</id>
+			<name>Archiva Managed Internal Repository</name>
+			<url>http://archiva.mccollum.enterprises/repository/internal/</url>
+			<releases>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>snapshots</id>
+			<name>Archiva Managed Snapshot Repository</name>
+			<url>http://archiva.mccollum.enterprises/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+</project>
