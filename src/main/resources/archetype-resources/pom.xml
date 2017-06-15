@@ -34,6 +34,18 @@
 			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Url Utilities (It's often difficult to figure out what the real URL for a server is, so this library handles that) -->
+		<dependency>
+			<groupId>enterprises.mccollum.jee</groupId>
+			<artifactId>urlutils</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- GenericEntityEJB: Manages database access in a PURELY java way so you don't have to think about how SQL, etc. works (for similar, see Spring Data) -->
+		<dependency>
+			<groupId>enterprises.mccollum.utils</groupId>
+			<artifactId>genericentityejb</artifactId>
+			<version>1.0.5</version>
+		</dependency>
 		<dependency>
 			<!-- This is what provides authentication and authorization for your application -->
 			<groupId>enterprises.mccollum.wmapp</groupId>

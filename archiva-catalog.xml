@@ -5,7 +5,7 @@
 		<archetype>
 			<groupId>enterprises.mccollum.wmapp</groupId>
 			<artifactId>jee-project-uberjar-archetype</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<repository>http://archiva.mccollum.enterprises/repository/internal</repository>
 			<description>Java EE 7 project archetype for web/ReST applications that are standalone for the Westmont community</description>
 		</archetype>
