@@ -1,7 +1,14 @@
 image: 'maven:alpine'
 
 variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   GIT_SUBMODULE_STRATEGY: recursive
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
 
 before_script:
   - apk update && apk add openssl ca-certificates git
@@ -14,7 +21,7 @@ stages:
 build:
   stage: build
   script:
-    - mvn package -DskipTests
+    - mvn $MAVEN_CLI_OPTS package -DskipTests
   artifacts:
     paths:
       - target/*.war
@@ -23,11 +30,12 @@ build:
 test:
   stage: test
   script:
-    - mvn test
+    - mvn $MAVEN_CLI_OPTS test
 
 deploy:
   stage: deploy
   script:
+    - mvn $MAVEN_CLI_OPTS deploy
     - echo "Run dep script here"
     - git clone --recursive "$CI_REPOSITORY_URL" wmapp-enterprises.mccollum.wmapp.jee-project-uberjar-archetype
     - cd wmapp-enterprises.mccollum.wmapp.jee-project-uberjar-archetype
